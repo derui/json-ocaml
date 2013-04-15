@@ -79,10 +79,8 @@ OCAMLFLAGS    += -annot -bin-annot
 # Build an OCaml library
 #
 
-json_lexer.ml : json_lexer.mll
-
 FILES[] = $(removesuffix $(ls *.ml))
-FILES += json_lexer
+FILES += json_lexer json_parser
 #    file1
 #    file2
 #

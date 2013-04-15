@@ -87,12 +87,20 @@ FILES[] = $(removesuffix $(ls *ml))
 #    file2
 #
 
-TARGET = 
+PROGRAMS =
+	foreach(x, $(FILES))
+		.PHONY: run-$(removeprefix test_, $x)
+		run-$(removeprefix test_, $x):
+			./$x$(EXE)
+		export
+		value $(OCamlProgram $x, $x)
 
-.DEFAULT: $(TARGET)
+test: $(PROGRAMS)
+
+.DEFAULT: test
 
 clean:
-	rm -f $(TARGET)
+	rm -f $(PROGRAMS)
 	rm -f *.annot
 	rm -f *.cmx
 	rm -f *.cmt

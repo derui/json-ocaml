@@ -1,5 +1,5 @@
 {
-  open Lexing
+  open Json_parser
   exception Eof
 }
 (* Json Tokens *)

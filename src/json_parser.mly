@@ -1,36 +1,40 @@
-(* jsonのパーサー *)
+/* jsonのパーサー */
 
 %token <string> STRING
 %token LPAREN LBRACE RPAREN RBRACE COLON COMMA MINUS PLUS TRUE FALSE NULL
-%toekn DOT DOUBLE_QUOTE EXP CONTROL_CHAR CHAR
+%token DOT DOUBLE_QUOTE
+%token <char> EXP
+%token <char> DIGIT
+%token <char> CHAR
+%token <string> CONTROL_CHAR
 %token <float> NUMBER
 %token <bool> BOOL
 %start parser_main
-%type <Json.t> parser_main
+%type <Json_type.t> parser_main
 %%
 
 parser_main:
-  value EOF  {$1}
+  value {$1}
 ;
 
 value:
-  string
- | number    { $1 }
- | array     { $1 }
- | obj       { $1 }
- | TRUE      { Bool(true) }
- | FALSE     { Bool(false) }
- | null      { Null }
+  string     { Json_type.String($1) }
+ | number    { Json_type.Number($1) }
+ | array     { Json_type.Array($1) }
+ | obj       { Json_type.Object($1) }
+ | TRUE      { Json_type.Bool(true) }
+ | FALSE     { Json_type.Bool(false) }
+ | NULL      { Json_type.Null }
 ;
 
 obj:
-   LPAREN RPAREN  { Object([]) }
- | LPAREN members RPAREN { Object($2) }
+   LPAREN RPAREN  { [] }
+ | LPAREN members RPAREN { $2 }
 ;
 
 members:
    pair           { [$1] }
- | pair COMMA members { Object($1 :: $3) }
+ | pair COMMA members { $1 :: $3 }
 ;
 
 pair:
@@ -38,8 +42,8 @@ pair:
   ;
 
 array:
-  LBRACE RBRACE  { Array([]) }
- | LBRACE elements RBRACE  { Array($2) }
+  LBRACE RBRACE  { [] }
+ | LBRACE elements RBRACE  { $2 }
 ;
 
 elements:
@@ -53,13 +57,13 @@ string:
      ;
 
 chars:
-  char  { string_of_char($1) }
+  char  { $1 }
  | char chars { $1 ^ $2 }
      ;
 
 char:
   CONTROL_CHAR   { $1 }
- | CHAR          { $1 }
+ | CHAR          { Char.escaped($1) }
 ;
 number:
    integer       { float_of_string($1) }
@@ -69,10 +73,10 @@ number:
      ;
 
 integer:
-   DIGIT   { $1 }
- | DIGIT digits  { $1 ^ $2 }
- | MINUS DIGIT { "-" ^ $2 }
- | MINUS DIGIT digits { "-" ^ $2 ^ $3 }
+   DIGIT   { Char.escaped($1) }
+ | DIGIT digits  { Char.escaped($1) ^ $2 }
+ | MINUS DIGIT { "-" ^ Char.escaped($2) }
+ | MINUS DIGIT digits { "-" ^ Char.escaped($2) ^ $3 }
      ;
 
 frac:
@@ -82,11 +86,11 @@ exp:
   e digits { "e" ^ $2 }
   ;
 digits:
-  DIGIT  { $1 }
- |DIGIT digits { $1 ^ $2 }
+  DIGIT  { Char.escaped($1) }
+ |DIGIT digits { Char.escaped($1) ^ $2 }
      ;
 e:
-  EXP  { $1 }
-  EXP PLUS { $1 ^ "+"}
-  EXP MINUS { $1 ^ "-" }
+  EXP  { Char.escaped($1) }
+ | EXP PLUS { Char.escaped($1) ^ "+"}
+ | EXP MINUS { Char.escaped($1) ^ "-" }
   ;
