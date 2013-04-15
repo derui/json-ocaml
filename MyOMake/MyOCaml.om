@@ -300,6 +300,147 @@ public.OCamlOpt() =
     value $(OCAMLFIND) $(OCAMLOPT) $(LAZY_OCAMLFINDFLAGS) $(PREFIXED_OCAMLPACKS) $(OCAMLFLAGS)\
               $(OCAMLOPTFLAGS) $(OCAMLPPFLAGS) $(PREFIXED_OCAMLINCLUDES) $(OCAML_PACKAGE_FLAG)
 
+%.ml : %.mll
+    $(OCAMLLEX) $(OCAMLLEXFLAGS) $<
+
+
+########################################################################
+# Parser generators
+#
+
+#
+# You can choose to use ocamlyacc or menhir for a parser
+# generator.  The default is ocamlyacc.  Define the
+# MENHIR_ENABLED as true if you would rather use menhir.
+#
+# Variables:
+#    MENHIR : the name of the menhir executable
+#    MENHIR_FLAGS : any additional options to pass to Menhir
+#    MENHIR_AVAILABLE : the menhir executable is installed
+#    MENHIR_RAW_DEPEND : menhir supports the --raw-depend option
+#
+public.MENHIR = menhir
+public.MENHIR_FLAGS =
+public.MENHIR_ENABLED = false
+.STATIC:
+    MENHIR_AVAILABLE = $(CheckProg $(MENHIR))
+    MENHIR_RAW_DEPEND = false
+    if $(MENHIR_AVAILABLE)
+        ConfMsgChecking(if $(MENHIR) supports the --raw-depend option)
+        MENHIR_RAW_DEPEND = $(ConfMsgYesNo $(shell-success-null $(MENHIR) -help | grep $'^ *--raw-depend'))
+        export
+
+# Menhir is being requested.  Check that it is installed.
+public.MenhirCheck() =
+    if $(not $(MENHIR_AVAILABLE))
+       eprintln($"""!!! You are asking to use Menhir, but it is not installed.""")
+       eprintln($"""!!! See the Menhir home page for instructions on downloading.""")
+       eprintln($"""!!!    http://cristal.inria.fr/~fpottier/menhir/""")
+       exit(1)
+
+# Compute the correct ocamlc and ocamldep options for Menhir.
+public.MenhirOCamlcCommand() =
+    MenhirCheck()
+    private.ocamlc[] =\
+       $(OCAMLFIND) $(OCAMLC) $(LAZY_OCAMLFINDFLAGS) $(PREFIXED_OCAMLPACKS) $(OCAMLFLAGS)\
+           $(OCAMLCFLAGS) $(OCAMLPPFLAGS) $(PREFIXED_OCAMLINCLUDES)
+    value --ocamlc $(quote-argv $(ocamlc))
+
+public.MenhirOCamldepCommand(raw) =
+    ocamldep =
+       if $(raw)
+           value $(OCAMLDEP) -modules $(OCAMLDEPFLAGS)
+       else
+           value $(OCAMLDEP) $(PREFIXED_OCAMLINCLUDES) $(OCAMLDEPFLAGS)
+    value --ocamldep $(quote-argv $(ocamldep))
+
+# Compute the Mendir dependency scanner command
+public.MenhirScannerCommand(base, src) =
+    if $(MENHIR_ENABLED)
+        if $(and $(MENHIR_RAW_DEPEND), $(OCAMLDEP_MODULES_ENABLED))
+            value $(MENHIR) $(MENHIR_FLAGS) $(MenhirOCamldepCommand true) $(base) --raw-depend $(src) | ocamldep-postproc -preserve-targets
+        else
+            value $(MENHIR) $(MENHIR_FLAGS) $(MenhirOCamldepCommand false) $(base) --depend $(src)
+
+# Use Menhir if MENHIR_ENABLED, ocamlyacc otherwise
+public.OCamlYaccCommand(src) =
+    if $(MENHIR_ENABLED)
+        value $(MENHIR) $(MENHIR_FLAGS) $(MenhirOCamlcCommand) $(src)
+    else
+        value $(OCAMLYACC) $(OCAMLYACCFLAGS) $(src)
+
+.SCANNER: scan-ocamlyacc-%.mly: %.mly :value: $(MENHIR_ENABLED) $(OCamlScannerTargets $&)
+    $(MenhirScannerCommand $(EMPTY), $<)
+
+%.ml %.mli: %.mly :scanner: scan-ocamlyacc-%.mly
+    $(OCamlYaccCommand $<)
+
+#
+# \begin{doc}
+# \subsection{Using the Menhir parser generator}
+#
+# Menhir is a parser generator that is mostly compatible with
+# \verb+ocamlyacc+, but with many improvements.  A few of these
+# are listed here (excerpted from the Menhir home page
+# \url{http://cristal.inria.fr/~fpottier/menhir/}).
+#
+# \begin{itemize}
+# \item Menhir's explanations are believed to be understandable by mere humans.
+# \item Menhir allows grammar specifications to be split over multiple files.
+#     It also allows several grammars to share a single set of tokens.
+# \item Menhir is able to produce parsers that are parameterized by Objective Caml modules.
+# \item [Added by jyh] With the \verb+--infer+ option, Menhir can typecheck the semantic actions
+#    in your grammar at \emph{generation} time.
+# \end{itemize}
+#
+# What do you need to do to use Menhir instead of \verb+ocamlyacc+?
+# \begin{enumerate}
+# \item Place the following definition before the relevant section of your project
+#    (or at the top of your project \verb+OMakefile+ if you want to use Menhir everywhere).
+#
+# \begin{verbatim}
+#    MENHIR_ENABLED = true
+# \end{verbatim}
+#
+# \item Optionally, add any desired Menhir options to the \verb+MENHIR_FLAGS+ variable.
+#
+# \begin{verbatim}
+#    MENHIR_FLAGS += --infer
+# \end{verbatim}
+# \end{enumerate}
+#
+# With this setup, any file with a \verb+.mly+ suffix will be compiled with Menhir.
+#
+# If your grammar is split across several files, you need to specify it explicitly,
+# using the \verb+MenhirMulti+ function.
+#
+# \begin{verbatim}
+#     MenhirMulti(target, sources)
+#         target : filename, without suffix
+#         sources : the files that define the grammar, without suffixes
+# \end{verbatim}
+#
+# For example, if you want to generate the parser files \verb+parse.ml+ and \verb+parse.mli+,
+# from the grammar specified in files \verb+a.mly+ and \verb+b.mly+, you would use
+# the following.
+#
+# \begin{verbatim}
+#     MenhirMulti(parse, a b)
+# \end{verbatim}
+# \end{doc}
+#
+public.MenhirMulti(target, sources) =
+    MenhirCheck()
+    sources = $(addsuffix .mly, $(sources))
+
+    # Menhir needs all the files for dependency analysis
+    .SCANNER: scan-menhir-$(target).multi: $(sources) :value: $(OCamlScannerTargets $&)
+        $(MenhirScannerCommand --base $(target), $+)
+
+    # Set up the actual rule
+    $(target).ml $(target).mli: $(sources) :scanner: scan-menhir-$(target).multi
+        $(MENHIR) $(MENHIR_FLAGS) $(MenhirOCamlcCommand) --base $(target) $+
+
 %.cmx : %.ml
     section rule
         if $(not $(NATIVE_ENABLED))
