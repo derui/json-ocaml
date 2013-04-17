@@ -5,7 +5,9 @@
 %token DOT DOUBLE_QUOTE
 %token <char> EXP
 %token <char> DIGIT
+%token <char> DIGIT1_9
 %token <char> CHAR
+%token EOF
 %token <string> CONTROL_CHAR
 %token <float> NUMBER
 %token <bool> BOOL
@@ -14,7 +16,7 @@
 %%
 
 parser_main:
-  value {$1}
+  value EOF {$1}
 ;
 
 value:
@@ -54,12 +56,12 @@ elements:
 string:
   DOUBLE_QUOTE DOUBLE_QUOTE  { "" }
  | DOUBLE_QUOTE chars DOUBLE_QUOTE  { $2 }
-     ;
+;
 
 chars:
   char  { $1 }
  | char chars { $1 ^ $2 }
-     ;
+;
 
 char:
   CONTROL_CHAR   { $1 }
@@ -70,27 +72,30 @@ number:
  | integer frac  { float_of_string($1 ^ $2) }
  | integer exp   { float_of_string($1 ^ $2) }
  | integer frac exp { float_of_string($1 ^ $2 ^ $3) }
-     ;
+;
 
 integer:
    DIGIT   { Char.escaped($1) }
- | DIGIT digits  { Char.escaped($1) ^ $2 }
+ | DIGIT1_9 digits  { Char.escaped($1) ^ $2 }
  | MINUS DIGIT { "-" ^ Char.escaped($2) }
- | MINUS DIGIT digits { "-" ^ Char.escaped($2) ^ $3 }
-     ;
+ | MINUS DIGIT1_9 digits { "-" ^ Char.escaped($2) ^ $3 }
+;
 
 frac:
   DOT digits { "." ^ $2 }
-  ;
+;
+
 exp:
   e digits { "e" ^ $2 }
-  ;
+;
+
 digits:
   DIGIT  { Char.escaped($1) }
  |DIGIT digits { Char.escaped($1) ^ $2 }
-     ;
+;
+
 e:
   EXP  { Char.escaped($1) }
  | EXP PLUS { Char.escaped($1) ^ "+"}
  | EXP MINUS { Char.escaped($1) ^ "-" }
-  ;
+;

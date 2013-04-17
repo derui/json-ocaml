@@ -15,7 +15,9 @@ type token =
   | DOUBLE_QUOTE
   | EXP of (char)
   | DIGIT of (char)
+  | DIGIT1_9 of (char)
   | CHAR of (char)
+  | EOF
   | CONTROL_CHAR of (string)
   | NUMBER of (float)
   | BOOL of (bool)

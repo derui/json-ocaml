@@ -6,9 +6,9 @@ module Type = Json_type
 module E = Baselib.Std.Either
 
 (** type of json  *)
-type t = Json_type.t
+type t = Type.t
 
-type result = (t, string) E.t
+type result = Type.result
 
 let encode json = failwith ""
 
