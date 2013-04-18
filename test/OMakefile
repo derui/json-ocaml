@@ -89,15 +89,11 @@ FILES[] = $(removesuffix $(ls *ml))
 
 PROGRAMS =
 	foreach(x, $(FILES))
-		.PHONY: run-$(removeprefix test_, $x)
-		run-$(removeprefix test_, $x):
-			./$x$(EXE)
-		export
 		value $(OCamlProgram $x, $x)
 
 test: $(PROGRAMS)
-
-.DEFAULT: test
+	foreach(x, $(FILES))
+		./$x$(EXE)
 
 clean:
 	rm -f $(PROGRAMS)

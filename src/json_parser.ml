@@ -14,8 +14,7 @@ type token =
   | DOT
   | DOUBLE_QUOTE
   | EXP of (char)
-  | DIGIT of (char)
-  | DIGIT1_9 of (char)
+  | DIGIT of (string)
   | CHAR of (char)
   | EOF
   | CONTROL_CHAR of (string)
@@ -24,6 +23,17 @@ type token =
 
 open Parsing;;
 let _ = parse_error;;
+# 4 "json_parser.mly"
+    let to_str = function
+      | Json_type.String(s) -> "string:" ^ s
+      | Json_type.Number(_) -> "number"
+      | Json_type.Object(_) -> "object"
+      | Json_type.Array(_) -> "array"
+      | Json_type.Null -> "null"
+      | Json_type.Bool(_) -> "bool"
+
+  
+# 37 "json_parser.ml"
 let yytransl_const = [|
   258 (* LPAREN *);
   259 (* LBRACE *);
@@ -45,11 +55,10 @@ let yytransl_block = [|
   257 (* STRING *);
   271 (* EXP *);
   272 (* DIGIT *);
-  273 (* DIGIT1_9 *);
-  274 (* CHAR *);
-  275 (* CONTROL_CHAR *);
-  276 (* NUMBER *);
-  277 (* BOOL *);
+  273 (* CHAR *);
+  274 (* CONTROL_CHAR *);
+  275 (* NUMBER *);
+  276 (* BOOL *);
     0|]
 
 let yylhs = "\255\255\
@@ -68,52 +77,49 @@ let yylen = "\002\000\
 
 let yydefred = "\000\000\
 \000\000\000\000\000\000\000\000\000\000\006\000\007\000\008\000\
-\000\000\028\000\000\000\039\000\000\000\002\000\003\000\004\000\
-\005\000\000\000\009\000\000\000\000\000\000\000\014\000\000\000\
-\000\000\030\000\000\000\018\000\023\000\022\000\000\000\000\000\
-\000\000\029\000\001\000\000\000\000\000\000\000\026\000\000\000\
-\000\000\010\000\000\000\000\000\015\000\031\000\019\000\021\000\
-\035\000\032\000\038\000\037\000\027\000\033\000\013\000\012\000\
-\017\000"
+\000\000\000\000\039\000\000\000\002\000\003\000\004\000\005\000\
+\000\000\009\000\000\000\000\000\000\000\014\000\000\000\000\000\
+\000\000\018\000\023\000\022\000\000\000\000\000\000\000\029\000\
+\001\000\000\000\000\000\000\000\026\000\000\000\000\000\010\000\
+\000\000\000\000\015\000\031\000\019\000\021\000\035\000\032\000\
+\038\000\037\000\027\000\033\000\013\000\012\000\017\000"
 
 let yydgoto = "\002\000\
-\012\000\024\000\014\000\015\000\016\000\017\000\021\000\022\000\
-\025\000\031\000\032\000\018\000\038\000\039\000\034\000\040\000"
+\011\000\023\000\013\000\014\000\015\000\016\000\020\000\021\000\
+\024\000\029\000\030\000\017\000\036\000\037\000\032\000\038\000"
 
-let yysindex = "\006\000\
-\022\255\000\000\254\254\006\255\243\254\000\000\000\000\000\000\
-\031\255\000\000\250\254\000\000\015\000\000\000\000\000\000\000\
-\000\000\013\255\000\000\015\255\023\255\012\255\000\000\030\255\
-\026\255\000\000\250\254\000\000\000\000\000\000\033\255\024\255\
-\250\254\000\000\000\000\250\254\043\255\014\255\000\000\250\254\
-\022\255\000\000\039\255\022\255\000\000\000\000\000\000\000\000\
-\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\
-\000\000"
+let yysindex = "\002\000\
+\023\255\000\000\254\254\008\255\249\254\000\000\000\000\000\000\
+\246\254\007\255\000\000\027\000\000\000\000\000\000\000\000\000\
+\015\255\000\000\026\255\039\255\040\255\000\000\041\255\045\255\
+\007\255\000\000\000\000\000\000\037\255\253\254\007\255\000\000\
+\000\000\007\255\032\255\031\255\000\000\007\255\023\255\000\000\
+\038\255\023\255\000\000\000\000\000\000\000\000\000\000\000\000\
+\000\000\000\000\000\000\000\000\000\000\000\000\000\000"
 
 let yyrindex = "\000\000\
 \000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\
+\000\000\001\000\000\000\000\000\000\000\000\000\000\000\000\000\
+\021\000\000\000\000\000\000\000\049\255\000\000\050\255\000\000\
+\005\000\000\000\000\000\000\000\000\000\042\255\017\000\000\000\
+\000\000\000\000\043\255\029\000\000\000\000\000\000\000\000\000\
 \000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\
-\000\000\005\000\000\000\000\000\000\000\050\255\000\000\051\255\
-\000\000\000\000\000\000\000\000\000\000\000\000\000\000\041\255\
-\001\000\000\000\000\000\000\000\042\255\013\000\000\000\000\000\
-\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\
-\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\
-\000\000"
+\000\000\000\000\000\000\000\000\000\000\000\000\000\000"
 
 let yygindex = "\000\000\
-\000\000\255\255\003\000\000\000\000\000\000\000\014\000\000\000\
-\016\000\027\000\000\000\000\000\000\000\023\000\008\000\000\000"
+\000\000\255\255\003\000\000\000\000\000\000\000\013\000\000\000\
+\015\000\028\000\000\000\000\000\000\000\024\000\011\000\000\000"
 
-let yytablesize = 276
-let yytable = "\013\000\
-\034\000\019\000\026\000\027\000\024\000\020\000\001\000\003\000\
-\004\000\033\000\023\000\009\000\025\000\005\000\035\000\006\000\
-\007\000\008\000\043\000\009\000\041\000\010\000\011\000\003\000\
-\004\000\036\000\042\000\037\000\037\000\005\000\045\000\006\000\
-\007\000\008\000\046\000\009\000\044\000\010\000\011\000\055\000\
-\049\000\029\000\030\000\050\000\028\000\020\000\047\000\054\000\
-\029\000\030\000\051\000\052\000\009\000\011\000\020\000\016\000\
-\056\000\036\000\048\000\057\000\053\000\000\000\000\000\000\000\
+let yytablesize = 292
+let yytable = "\012\000\
+\028\000\018\000\001\000\026\000\030\000\019\000\027\000\028\000\
+\025\000\003\000\004\000\009\000\022\000\027\000\028\000\005\000\
+\034\000\006\000\007\000\008\000\024\000\009\000\031\000\010\000\
+\003\000\004\000\033\000\034\000\025\000\035\000\005\000\039\000\
+\006\000\007\000\008\000\044\000\009\000\053\000\010\000\049\000\
+\050\000\047\000\040\000\019\000\048\000\035\000\041\000\042\000\
+\052\000\043\000\045\000\009\000\011\000\054\000\016\000\020\000\
+\055\000\046\000\036\000\051\000\000\000\000\000\000\000\000\000\
 \000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\
 \000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\
 \000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\
@@ -138,19 +144,21 @@ let yytable = "\013\000\
 \000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\
 \000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\
 \000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\
-\000\000\000\000\000\000\000\000\034\000\034\000\000\000\034\000\
+\000\000\000\000\000\000\000\000\028\000\028\000\000\000\028\000\
+\030\000\030\000\000\000\030\000\000\000\028\000\000\000\028\000\
+\000\000\030\000\000\000\030\000\034\000\034\000\000\000\034\000\
 \024\000\024\000\000\000\024\000\000\000\034\000\000\000\034\000\
 \025\000\025\000\000\000\025\000"
 
 let yycheck = "\001\000\
-\000\000\004\001\016\001\017\001\000\000\003\000\001\000\002\001\
-\003\001\016\001\005\001\014\001\000\000\008\001\000\000\010\001\
-\011\001\012\001\007\001\014\001\006\001\016\001\017\001\002\001\
-\003\001\013\001\004\001\015\001\015\001\008\001\005\001\010\001\
-\011\001\012\001\027\000\014\001\007\001\016\001\017\001\041\000\
-\033\000\018\001\019\001\036\000\014\001\043\000\014\001\040\000\
-\018\001\019\001\008\001\009\001\014\001\004\001\014\001\005\001\
-\043\000\016\001\032\000\044\000\038\000\255\255\255\255\255\255\
+\000\000\004\001\001\000\014\001\000\000\003\000\017\001\018\001\
+\016\001\002\001\003\001\014\001\005\001\017\001\018\001\008\001\
+\000\000\010\001\011\001\012\001\000\000\014\001\016\001\016\001\
+\002\001\003\001\000\000\013\001\000\000\015\001\008\001\006\001\
+\010\001\011\001\012\001\025\000\014\001\039\000\016\001\008\001\
+\009\001\031\000\004\001\041\000\034\000\015\001\007\001\007\001\
+\038\000\005\001\014\001\014\001\004\001\041\000\005\001\014\001\
+\042\000\030\000\016\001\036\000\255\255\255\255\255\255\255\255\
 \255\255\255\255\255\255\255\255\255\255\255\255\255\255\255\255\
 \255\255\255\255\255\255\255\255\255\255\255\255\255\255\255\255\
 \255\255\255\255\255\255\255\255\255\255\255\255\255\255\255\255\
@@ -177,6 +185,8 @@ let yycheck = "\001\000\
 \255\255\255\255\255\255\255\255\255\255\255\255\255\255\255\255\
 \255\255\255\255\255\255\255\255\004\001\005\001\255\255\007\001\
 \004\001\005\001\255\255\007\001\255\255\013\001\255\255\015\001\
+\255\255\013\001\255\255\015\001\004\001\005\001\255\255\007\001\
+\004\001\005\001\255\255\007\001\255\255\013\001\255\255\015\001\
 \004\001\005\001\255\255\007\001"
 
 let yynames_const = "\
@@ -200,7 +210,6 @@ let yynames_block = "\
   STRING\000\
   EXP\000\
   DIGIT\000\
-  DIGIT1_9\000\
   CHAR\000\
   CONTROL_CHAR\000\
   NUMBER\000\
@@ -212,274 +221,274 @@ let yyact = [|
 ; (fun __caml_parser_env ->
     let _1 = (Parsing.peek_val __caml_parser_env 1 : 'value) in
     Obj.repr(
-# 19 "json_parser.mly"
+# 29 "json_parser.mly"
             (_1)
-# 218 "json_parser.ml"
+# 227 "json_parser.ml"
                : Json_type.t))
 ; (fun __caml_parser_env ->
     let _1 = (Parsing.peek_val __caml_parser_env 0 : 'string) in
     Obj.repr(
-# 23 "json_parser.mly"
+# 33 "json_parser.mly"
              ( Json_type.String(_1) )
-# 225 "json_parser.ml"
+# 234 "json_parser.ml"
                : 'value))
 ; (fun __caml_parser_env ->
     let _1 = (Parsing.peek_val __caml_parser_env 0 : 'number) in
     Obj.repr(
-# 24 "json_parser.mly"
+# 34 "json_parser.mly"
              ( Json_type.Number(_1) )
-# 232 "json_parser.ml"
+# 241 "json_parser.ml"
                : 'value))
 ; (fun __caml_parser_env ->
     let _1 = (Parsing.peek_val __caml_parser_env 0 : 'array) in
     Obj.repr(
-# 25 "json_parser.mly"
+# 35 "json_parser.mly"
              ( Json_type.Array(_1) )
-# 239 "json_parser.ml"
+# 248 "json_parser.ml"
                : 'value))
 ; (fun __caml_parser_env ->
     let _1 = (Parsing.peek_val __caml_parser_env 0 : 'obj) in
     Obj.repr(
-# 26 "json_parser.mly"
+# 36 "json_parser.mly"
              ( Json_type.Object(_1) )
-# 246 "json_parser.ml"
+# 255 "json_parser.ml"
                : 'value))
 ; (fun __caml_parser_env ->
     Obj.repr(
-# 27 "json_parser.mly"
+# 37 "json_parser.mly"
              ( Json_type.Bool(true) )
-# 252 "json_parser.ml"
+# 261 "json_parser.ml"
                : 'value))
 ; (fun __caml_parser_env ->
     Obj.repr(
-# 28 "json_parser.mly"
+# 38 "json_parser.mly"
              ( Json_type.Bool(false) )
-# 258 "json_parser.ml"
+# 267 "json_parser.ml"
                : 'value))
 ; (fun __caml_parser_env ->
     Obj.repr(
-# 29 "json_parser.mly"
+# 39 "json_parser.mly"
              ( Json_type.Null )
-# 264 "json_parser.ml"
+# 273 "json_parser.ml"
                : 'value))
 ; (fun __caml_parser_env ->
     Obj.repr(
-# 33 "json_parser.mly"
+# 43 "json_parser.mly"
                   ( [] )
-# 270 "json_parser.ml"
+# 279 "json_parser.ml"
                : 'obj))
 ; (fun __caml_parser_env ->
     let _2 = (Parsing.peek_val __caml_parser_env 1 : 'members) in
     Obj.repr(
-# 34 "json_parser.mly"
+# 44 "json_parser.mly"
                          ( _2 )
-# 277 "json_parser.ml"
+# 286 "json_parser.ml"
                : 'obj))
 ; (fun __caml_parser_env ->
     let _1 = (Parsing.peek_val __caml_parser_env 0 : 'pair) in
     Obj.repr(
-# 38 "json_parser.mly"
+# 48 "json_parser.mly"
                   ( [_1] )
-# 284 "json_parser.ml"
+# 293 "json_parser.ml"
                : 'members))
 ; (fun __caml_parser_env ->
     let _1 = (Parsing.peek_val __caml_parser_env 2 : 'pair) in
     let _3 = (Parsing.peek_val __caml_parser_env 0 : 'members) in
     Obj.repr(
-# 39 "json_parser.mly"
+# 49 "json_parser.mly"
                       ( _1 :: _3 )
-# 292 "json_parser.ml"
+# 301 "json_parser.ml"
                : 'members))
 ; (fun __caml_parser_env ->
     let _1 = (Parsing.peek_val __caml_parser_env 2 : 'string) in
     let _3 = (Parsing.peek_val __caml_parser_env 0 : 'value) in
     Obj.repr(
-# 43 "json_parser.mly"
+# 53 "json_parser.mly"
                      ( (_1, _3) )
-# 300 "json_parser.ml"
+# 309 "json_parser.ml"
                : 'pair))
 ; (fun __caml_parser_env ->
     Obj.repr(
-# 47 "json_parser.mly"
+# 57 "json_parser.mly"
                  ( [] )
-# 306 "json_parser.ml"
+# 315 "json_parser.ml"
                : 'array))
 ; (fun __caml_parser_env ->
     let _2 = (Parsing.peek_val __caml_parser_env 1 : 'elements) in
     Obj.repr(
-# 48 "json_parser.mly"
+# 58 "json_parser.mly"
                            ( _2 )
-# 313 "json_parser.ml"
+# 322 "json_parser.ml"
                : 'array))
 ; (fun __caml_parser_env ->
     let _1 = (Parsing.peek_val __caml_parser_env 0 : 'value) in
     Obj.repr(
-# 52 "json_parser.mly"
+# 62 "json_parser.mly"
            ( [_1] )
-# 320 "json_parser.ml"
+# 329 "json_parser.ml"
                : 'elements))
 ; (fun __caml_parser_env ->
     let _1 = (Parsing.peek_val __caml_parser_env 2 : 'value) in
     let _3 = (Parsing.peek_val __caml_parser_env 0 : 'elements) in
     Obj.repr(
-# 53 "json_parser.mly"
+# 63 "json_parser.mly"
                          ( _1 :: _3 )
-# 328 "json_parser.ml"
+# 337 "json_parser.ml"
                : 'elements))
 ; (fun __caml_parser_env ->
     Obj.repr(
-# 57 "json_parser.mly"
+# 67 "json_parser.mly"
                              ( "" )
-# 334 "json_parser.ml"
+# 343 "json_parser.ml"
                : 'string))
 ; (fun __caml_parser_env ->
     let _2 = (Parsing.peek_val __caml_parser_env 1 : 'chars) in
     Obj.repr(
-# 58 "json_parser.mly"
+# 68 "json_parser.mly"
                                     ( _2 )
-# 341 "json_parser.ml"
+# 350 "json_parser.ml"
                : 'string))
 ; (fun __caml_parser_env ->
     let _1 = (Parsing.peek_val __caml_parser_env 0 : 'char) in
     Obj.repr(
-# 62 "json_parser.mly"
+# 72 "json_parser.mly"
         ( _1 )
-# 348 "json_parser.ml"
+# 357 "json_parser.ml"
                : 'chars))
 ; (fun __caml_parser_env ->
     let _1 = (Parsing.peek_val __caml_parser_env 1 : 'char) in
     let _2 = (Parsing.peek_val __caml_parser_env 0 : 'chars) in
     Obj.repr(
-# 63 "json_parser.mly"
+# 73 "json_parser.mly"
               ( _1 ^ _2 )
-# 356 "json_parser.ml"
+# 365 "json_parser.ml"
                : 'chars))
 ; (fun __caml_parser_env ->
     let _1 = (Parsing.peek_val __caml_parser_env 0 : string) in
     Obj.repr(
-# 67 "json_parser.mly"
+# 77 "json_parser.mly"
                  ( _1 )
-# 363 "json_parser.ml"
+# 372 "json_parser.ml"
                : 'char))
 ; (fun __caml_parser_env ->
     let _1 = (Parsing.peek_val __caml_parser_env 0 : char) in
     Obj.repr(
-# 68 "json_parser.mly"
+# 78 "json_parser.mly"
                  ( Char.escaped(_1) )
-# 370 "json_parser.ml"
+# 379 "json_parser.ml"
                : 'char))
 ; (fun __caml_parser_env ->
     let _1 = (Parsing.peek_val __caml_parser_env 0 : 'integer) in
     Obj.repr(
-# 71 "json_parser.mly"
+# 81 "json_parser.mly"
                  ( float_of_string(_1) )
-# 377 "json_parser.ml"
+# 386 "json_parser.ml"
                : 'number))
 ; (fun __caml_parser_env ->
     let _1 = (Parsing.peek_val __caml_parser_env 1 : 'integer) in
     let _2 = (Parsing.peek_val __caml_parser_env 0 : 'frac) in
     Obj.repr(
-# 72 "json_parser.mly"
+# 82 "json_parser.mly"
                  ( float_of_string(_1 ^ _2) )
-# 385 "json_parser.ml"
+# 394 "json_parser.ml"
                : 'number))
 ; (fun __caml_parser_env ->
     let _1 = (Parsing.peek_val __caml_parser_env 1 : 'integer) in
     let _2 = (Parsing.peek_val __caml_parser_env 0 : 'exp) in
     Obj.repr(
-# 73 "json_parser.mly"
+# 83 "json_parser.mly"
                  ( float_of_string(_1 ^ _2) )
-# 393 "json_parser.ml"
+# 402 "json_parser.ml"
                : 'number))
 ; (fun __caml_parser_env ->
     let _1 = (Parsing.peek_val __caml_parser_env 2 : 'integer) in
     let _2 = (Parsing.peek_val __caml_parser_env 1 : 'frac) in
     let _3 = (Parsing.peek_val __caml_parser_env 0 : 'exp) in
     Obj.repr(
-# 74 "json_parser.mly"
+# 84 "json_parser.mly"
                     ( float_of_string(_1 ^ _2 ^ _3) )
-# 402 "json_parser.ml"
+# 411 "json_parser.ml"
                : 'number))
 ; (fun __caml_parser_env ->
-    let _1 = (Parsing.peek_val __caml_parser_env 0 : char) in
+    let _1 = (Parsing.peek_val __caml_parser_env 0 : string) in
     Obj.repr(
-# 78 "json_parser.mly"
-           ( Char.escaped(_1) )
-# 409 "json_parser.ml"
+# 88 "json_parser.mly"
+           ( _1 )
+# 418 "json_parser.ml"
                : 'integer))
 ; (fun __caml_parser_env ->
-    let _1 = (Parsing.peek_val __caml_parser_env 1 : char) in
+    let _1 = (Parsing.peek_val __caml_parser_env 1 : string) in
     let _2 = (Parsing.peek_val __caml_parser_env 0 : 'digits) in
     Obj.repr(
-# 79 "json_parser.mly"
-                    ( Char.escaped(_1) ^ _2 )
-# 417 "json_parser.ml"
+# 89 "json_parser.mly"
+                 ( _1 ^ _2 )
+# 426 "json_parser.ml"
                : 'integer))
 ; (fun __caml_parser_env ->
-    let _2 = (Parsing.peek_val __caml_parser_env 0 : char) in
+    let _2 = (Parsing.peek_val __caml_parser_env 0 : string) in
     Obj.repr(
-# 80 "json_parser.mly"
-               ( "-" ^ Char.escaped(_2) )
-# 424 "json_parser.ml"
+# 90 "json_parser.mly"
+               ( "-" ^ _2 )
+# 433 "json_parser.ml"
                : 'integer))
 ; (fun __caml_parser_env ->
-    let _2 = (Parsing.peek_val __caml_parser_env 1 : char) in
+    let _2 = (Parsing.peek_val __caml_parser_env 1 : string) in
     let _3 = (Parsing.peek_val __caml_parser_env 0 : 'digits) in
     Obj.repr(
-# 81 "json_parser.mly"
-                         ( "-" ^ Char.escaped(_2) ^ _3 )
-# 432 "json_parser.ml"
+# 91 "json_parser.mly"
+                      ( "-" ^ _2 ^ _3 )
+# 441 "json_parser.ml"
                : 'integer))
 ; (fun __caml_parser_env ->
     let _2 = (Parsing.peek_val __caml_parser_env 0 : 'digits) in
     Obj.repr(
-# 85 "json_parser.mly"
+# 95 "json_parser.mly"
              ( "." ^ _2 )
-# 439 "json_parser.ml"
+# 448 "json_parser.ml"
                : 'frac))
 ; (fun __caml_parser_env ->
     let _1 = (Parsing.peek_val __caml_parser_env 1 : 'e) in
     let _2 = (Parsing.peek_val __caml_parser_env 0 : 'digits) in
     Obj.repr(
-# 89 "json_parser.mly"
+# 99 "json_parser.mly"
            ( "e" ^ _2 )
-# 447 "json_parser.ml"
+# 456 "json_parser.ml"
                : 'exp))
 ; (fun __caml_parser_env ->
-    let _1 = (Parsing.peek_val __caml_parser_env 0 : char) in
+    let _1 = (Parsing.peek_val __caml_parser_env 0 : string) in
     Obj.repr(
-# 93 "json_parser.mly"
-         ( Char.escaped(_1) )
-# 454 "json_parser.ml"
+# 103 "json_parser.mly"
+         ( _1 )
+# 463 "json_parser.ml"
                : 'digits))
 ; (fun __caml_parser_env ->
-    let _1 = (Parsing.peek_val __caml_parser_env 1 : char) in
+    let _1 = (Parsing.peek_val __caml_parser_env 1 : string) in
     let _2 = (Parsing.peek_val __caml_parser_env 0 : 'digits) in
     Obj.repr(
-# 94 "json_parser.mly"
-               ( Char.escaped(_1) ^ _2 )
-# 462 "json_parser.ml"
+# 104 "json_parser.mly"
+               ( _1 ^ _2 )
+# 471 "json_parser.ml"
                : 'digits))
 ; (fun __caml_parser_env ->
     let _1 = (Parsing.peek_val __caml_parser_env 0 : char) in
     Obj.repr(
-# 98 "json_parser.mly"
+# 108 "json_parser.mly"
        ( Char.escaped(_1) )
-# 469 "json_parser.ml"
+# 478 "json_parser.ml"
                : 'e))
 ; (fun __caml_parser_env ->
     let _1 = (Parsing.peek_val __caml_parser_env 1 : char) in
     Obj.repr(
-# 99 "json_parser.mly"
+# 109 "json_parser.mly"
             ( Char.escaped(_1) ^ "+")
-# 476 "json_parser.ml"
+# 485 "json_parser.ml"
                : 'e))
 ; (fun __caml_parser_env ->
     let _1 = (Parsing.peek_val __caml_parser_env 1 : char) in
     Obj.repr(
-# 100 "json_parser.mly"
+# 110 "json_parser.mly"
              ( Char.escaped(_1) ^ "-" )
-# 483 "json_parser.ml"
+# 492 "json_parser.ml"
                : 'e))
 (* Entry parser_main *)
 ; (fun __caml_parser_env -> raise (Parsing.YYexit (Parsing.peek_val __caml_parser_env 0)))

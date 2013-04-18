@@ -14,8 +14,7 @@ type token =
   | DOT
   | DOUBLE_QUOTE
   | EXP of (char)
-  | DIGIT of (char)
-  | DIGIT1_9 of (char)
+  | DIGIT of (string)
   | CHAR of (char)
   | EOF
   | CONTROL_CHAR of (string)

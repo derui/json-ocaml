@@ -1,11 +1,21 @@
 /* jsonのパーサー */
 
+  %{
+    let to_str = function
+      | Json_type.String(s) -> "string:" ^ s
+      | Json_type.Number(_) -> "number"
+      | Json_type.Object(_) -> "object"
+      | Json_type.Array(_) -> "array"
+      | Json_type.Null -> "null"
+      | Json_type.Bool(_) -> "bool"
+
+  %}
+
 %token <string> STRING
 %token LPAREN LBRACE RPAREN RBRACE COLON COMMA MINUS PLUS TRUE FALSE NULL
 %token DOT DOUBLE_QUOTE
 %token <char> EXP
-%token <char> DIGIT
-%token <char> DIGIT1_9
+%token <string> DIGIT
 %token <char> CHAR
 %token EOF
 %token <string> CONTROL_CHAR
@@ -75,10 +85,10 @@ number:
 ;
 
 integer:
-   DIGIT   { Char.escaped($1) }
- | DIGIT1_9 digits  { Char.escaped($1) ^ $2 }
- | MINUS DIGIT { "-" ^ Char.escaped($2) }
- | MINUS DIGIT1_9 digits { "-" ^ Char.escaped($2) ^ $3 }
+   DIGIT   { $1 }
+ | DIGIT digits  { $1 ^ $2 }
+ | MINUS DIGIT { "-" ^ $2 }
+ | MINUS DIGIT digits { "-" ^ $2 ^ $3 }
 ;
 
 frac:
@@ -90,8 +100,8 @@ exp:
 ;
 
 digits:
-  DIGIT  { Char.escaped($1) }
- |DIGIT digits { Char.escaped($1) ^ $2 }
+  DIGIT  { $1 }
+ |DIGIT digits { $1 ^ $2 }
 ;
 
 e:
