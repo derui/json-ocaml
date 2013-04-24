@@ -31,8 +31,8 @@ let test_one_object _ =
 ;;
 
 let test_multi_pair_in_an_object _ =
-  let o = J.decode "{\"test\":100;\"test2\":true;\"foo\":null}" in
-  assert_right_with "can not decode array having one element" (
+  let o = J.decode "{\"test\":100,\"test2\":true,\"foo\":null}" in
+  assert_right_with "can not decode object having some elements" (
     function
     | T.Object([("test", T.Number(100.0));
                 ("test2", T.Bool(true));
@@ -55,6 +55,18 @@ let test_one_array _ =
     | _ -> assert_failure "invalid pattern"
   ) o
 ;;
+
+let test_multi_array _ =
+  let o = J.decode "[\"hoge\",false,null,100.4, {\"test3\":\"value\"}]" in
+  assert_right_with "can not decode array having one element" (
+    function
+    | T.Array([T.String("hoge"); T.Bool(false);
+               T.Null; T.Number(100.4); T.Object([("test3", T.String("value"))])
+              ]) -> ()
+    | _ -> assert_failure "invalid pattern"
+  ) o
+;;
+
 
 let test_empty_string _ =
   let o = J.decode "\"\"" in
@@ -96,6 +108,21 @@ let test_one_digit _ =
   end;
 ;;
 
+let test_float_digit _ =
+  let assert_float json f =
+    match json with
+    | Right(T.Number(s)) -> assert_equal s f ~msg:("float " ^ (string_of_float s))
+    | _ -> assert_failure "can not decode" in
+  let o = J.decode "1e104" in
+  assert_float o 1e104;
+  let o = J.decode "1.04032" in
+  assert_float o 1.04032;
+  let o = J.decode "0.14e10" in
+  assert_float o 1.4e9;
+  let o = J.decode "-1.5" in
+  assert_float o (-1.5);
+;;
+
 let test_constants _ =
   let o = J.decode "null" in
   begin
@@ -123,9 +150,11 @@ let suite = "JSON decode" >::: [
   "multi pair in object" >:: test_multi_pair_in_an_object;
   "empty array" >:: test_empty_array;
   "one string array" >:: test_one_array;
+  "containing multi values in array" >:: test_multi_array;
   "empty string" >:: test_empty_string;
   "normal string" >:: test_normal_string;
   "one digit" >:: test_one_digit;
+  "floats" >:: test_float_digit;
   "constants" >:: test_constants;
 ]
 

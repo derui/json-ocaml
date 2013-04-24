@@ -41,7 +41,7 @@ value:
 
 obj:
    LPAREN RPAREN  { [] }
- | LPAREN members RPAREN { $2 }
+ | LPAREN members RPAREN {$2 }
 ;
 
 members:
@@ -51,7 +51,7 @@ members:
 
 pair:
   string COLON value { ($1, $3) }
-  ;
+;
 
 array:
   LBRACE RBRACE  { [] }
@@ -75,6 +75,15 @@ chars:
 
 char:
   CONTROL_CHAR   { $1 }
+ | DIGIT         { $1 }
+ | EXP           { Char.escaped($1) }
+ | DOT           { "." }
+ | MINUS         { "-" }
+ | PLUS          { "+" }
+ | LBRACE        { "{" }
+ | RBRACE        { "}" }
+ | LPAREN        { "(" }
+ | RPAREN        { ")" }
  | CHAR          { Char.escaped($1) }
 ;
 number:
