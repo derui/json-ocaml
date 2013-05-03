@@ -121,6 +121,8 @@ let test_float_digit _ =
   assert_float o 1.4e9;
   let o = J.decode "-1.5" in
   assert_float o (-1.5);
+  let o = J.decode "1." in
+  assert_left "the string '1.' can not decode to 1.0" o
 ;;
 
 let test_constants _ =

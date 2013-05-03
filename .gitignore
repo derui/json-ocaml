@@ -1,3 +1,5 @@
+build/
+
 *.cmo
 *.cmi
 *.cmt

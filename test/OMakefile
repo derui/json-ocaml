@@ -46,6 +46,7 @@ USE_OCAMLFIND = true
 OCAMLPACKS[] =
     oUnit
     num
+    str
 #    pack1
 #    pack2
 #
