@@ -4,6 +4,11 @@ module Decoder : sig
   include module type of Json_decoder
 end
 
+(** The JSON Encoder module *)
+module Encoder : sig
+  include module type of Json_encoder
+end
+
 (** The module having some types for JSON other modules *)
 module Type : sig
   include module type of Json_type

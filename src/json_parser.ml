@@ -23,7 +23,8 @@ type token =
 
 open Parsing;;
 let _ = parse_error;;
-# 4 "json_parser.mly"
+# 3 "json_parser.mly"
+
     let to_str = function
       | Json_type.String(s) -> "string:" ^ s
       | Json_type.Number(_) -> "number"
@@ -33,7 +34,7 @@ let _ = parse_error;;
       | Json_type.Bool(_) -> "bool"
 
   
-# 37 "json_parser.ml"
+# 38 "json_parser.ml"
 let yytransl_const = [|
   258 (* LPAREN *);
   259 (* LBRACE *);
@@ -228,73 +229,73 @@ let yyact = [|
     Obj.repr(
 # 29 "json_parser.mly"
             (_1)
-# 232 "json_parser.ml"
+# 233 "json_parser.ml"
                : Json_type.t))
 ; (fun __caml_parser_env ->
     let _1 = (Parsing.peek_val __caml_parser_env 0 : 'string) in
     Obj.repr(
 # 33 "json_parser.mly"
              ( Json_type.String(_1) )
-# 239 "json_parser.ml"
+# 240 "json_parser.ml"
                : 'value))
 ; (fun __caml_parser_env ->
     let _1 = (Parsing.peek_val __caml_parser_env 0 : 'number) in
     Obj.repr(
 # 34 "json_parser.mly"
              ( Json_type.Number(_1) )
-# 246 "json_parser.ml"
+# 247 "json_parser.ml"
                : 'value))
 ; (fun __caml_parser_env ->
     let _1 = (Parsing.peek_val __caml_parser_env 0 : 'array) in
     Obj.repr(
 # 35 "json_parser.mly"
              ( Json_type.Array(_1) )
-# 253 "json_parser.ml"
+# 254 "json_parser.ml"
                : 'value))
 ; (fun __caml_parser_env ->
     let _1 = (Parsing.peek_val __caml_parser_env 0 : 'obj) in
     Obj.repr(
 # 36 "json_parser.mly"
              ( Json_type.Object(_1) )
-# 260 "json_parser.ml"
+# 261 "json_parser.ml"
                : 'value))
 ; (fun __caml_parser_env ->
     Obj.repr(
 # 37 "json_parser.mly"
              ( Json_type.Bool(true) )
-# 266 "json_parser.ml"
+# 267 "json_parser.ml"
                : 'value))
 ; (fun __caml_parser_env ->
     Obj.repr(
 # 38 "json_parser.mly"
              ( Json_type.Bool(false) )
-# 272 "json_parser.ml"
+# 273 "json_parser.ml"
                : 'value))
 ; (fun __caml_parser_env ->
     Obj.repr(
 # 39 "json_parser.mly"
              ( Json_type.Null )
-# 278 "json_parser.ml"
+# 279 "json_parser.ml"
                : 'value))
 ; (fun __caml_parser_env ->
     Obj.repr(
 # 43 "json_parser.mly"
                   ( [] )
-# 284 "json_parser.ml"
+# 285 "json_parser.ml"
                : 'obj))
 ; (fun __caml_parser_env ->
     let _2 = (Parsing.peek_val __caml_parser_env 1 : 'members) in
     Obj.repr(
 # 44 "json_parser.mly"
                          (_2 )
-# 291 "json_parser.ml"
+# 292 "json_parser.ml"
                : 'obj))
 ; (fun __caml_parser_env ->
     let _1 = (Parsing.peek_val __caml_parser_env 0 : 'pair) in
     Obj.repr(
 # 48 "json_parser.mly"
                   ( [_1] )
-# 298 "json_parser.ml"
+# 299 "json_parser.ml"
                : 'members))
 ; (fun __caml_parser_env ->
     let _1 = (Parsing.peek_val __caml_parser_env 2 : 'pair) in
@@ -302,7 +303,7 @@ let yyact = [|
     Obj.repr(
 # 49 "json_parser.mly"
                       ( _1 :: _3 )
-# 306 "json_parser.ml"
+# 307 "json_parser.ml"
                : 'members))
 ; (fun __caml_parser_env ->
     let _1 = (Parsing.peek_val __caml_parser_env 2 : 'string) in
@@ -310,27 +311,27 @@ let yyact = [|
     Obj.repr(
 # 53 "json_parser.mly"
                      ( (_1, _3) )
-# 314 "json_parser.ml"
+# 315 "json_parser.ml"
                : 'pair))
 ; (fun __caml_parser_env ->
     Obj.repr(
 # 57 "json_parser.mly"
                  ( [] )
-# 320 "json_parser.ml"
+# 321 "json_parser.ml"
                : 'array))
 ; (fun __caml_parser_env ->
     let _2 = (Parsing.peek_val __caml_parser_env 1 : 'elements) in
     Obj.repr(
 # 58 "json_parser.mly"
                            ( _2 )
-# 327 "json_parser.ml"
+# 328 "json_parser.ml"
                : 'array))
 ; (fun __caml_parser_env ->
     let _1 = (Parsing.peek_val __caml_parser_env 0 : 'value) in
     Obj.repr(
 # 62 "json_parser.mly"
            ( [_1] )
-# 334 "json_parser.ml"
+# 335 "json_parser.ml"
                : 'elements))
 ; (fun __caml_parser_env ->
     let _1 = (Parsing.peek_val __caml_parser_env 2 : 'value) in
@@ -338,27 +339,27 @@ let yyact = [|
     Obj.repr(
 # 63 "json_parser.mly"
                          ( _1 :: _3 )
-# 342 "json_parser.ml"
+# 343 "json_parser.ml"
                : 'elements))
 ; (fun __caml_parser_env ->
     Obj.repr(
 # 67 "json_parser.mly"
                              ( "" )
-# 348 "json_parser.ml"
+# 349 "json_parser.ml"
                : 'string))
 ; (fun __caml_parser_env ->
     let _2 = (Parsing.peek_val __caml_parser_env 1 : 'chars) in
     Obj.repr(
 # 68 "json_parser.mly"
                                     ( _2 )
-# 355 "json_parser.ml"
+# 356 "json_parser.ml"
                : 'string))
 ; (fun __caml_parser_env ->
     let _1 = (Parsing.peek_val __caml_parser_env 0 : 'char) in
     Obj.repr(
 # 72 "json_parser.mly"
         ( _1 )
-# 362 "json_parser.ml"
+# 363 "json_parser.ml"
                : 'chars))
 ; (fun __caml_parser_env ->
     let _1 = (Parsing.peek_val __caml_parser_env 1 : 'char) in
@@ -366,84 +367,84 @@ let yyact = [|
     Obj.repr(
 # 73 "json_parser.mly"
               ( _1 ^ _2 )
-# 370 "json_parser.ml"
+# 371 "json_parser.ml"
                : 'chars))
 ; (fun __caml_parser_env ->
     let _1 = (Parsing.peek_val __caml_parser_env 0 : string) in
     Obj.repr(
 # 77 "json_parser.mly"
                  ( _1 )
-# 377 "json_parser.ml"
+# 378 "json_parser.ml"
                : 'char))
 ; (fun __caml_parser_env ->
     let _1 = (Parsing.peek_val __caml_parser_env 0 : string) in
     Obj.repr(
 # 78 "json_parser.mly"
                  ( _1 )
-# 384 "json_parser.ml"
+# 385 "json_parser.ml"
                : 'char))
 ; (fun __caml_parser_env ->
     let _1 = (Parsing.peek_val __caml_parser_env 0 : char) in
     Obj.repr(
 # 79 "json_parser.mly"
                  ( Char.escaped(_1) )
-# 391 "json_parser.ml"
+# 392 "json_parser.ml"
                : 'char))
 ; (fun __caml_parser_env ->
     Obj.repr(
 # 80 "json_parser.mly"
                  ( "." )
-# 397 "json_parser.ml"
+# 398 "json_parser.ml"
                : 'char))
 ; (fun __caml_parser_env ->
     Obj.repr(
 # 81 "json_parser.mly"
                  ( "-" )
-# 403 "json_parser.ml"
+# 404 "json_parser.ml"
                : 'char))
 ; (fun __caml_parser_env ->
     Obj.repr(
 # 82 "json_parser.mly"
                  ( "+" )
-# 409 "json_parser.ml"
+# 410 "json_parser.ml"
                : 'char))
 ; (fun __caml_parser_env ->
     Obj.repr(
 # 83 "json_parser.mly"
                  ( "{" )
-# 415 "json_parser.ml"
+# 416 "json_parser.ml"
                : 'char))
 ; (fun __caml_parser_env ->
     Obj.repr(
 # 84 "json_parser.mly"
                  ( "}" )
-# 421 "json_parser.ml"
+# 422 "json_parser.ml"
                : 'char))
 ; (fun __caml_parser_env ->
     Obj.repr(
 # 85 "json_parser.mly"
                  ( "(" )
-# 427 "json_parser.ml"
+# 428 "json_parser.ml"
                : 'char))
 ; (fun __caml_parser_env ->
     Obj.repr(
 # 86 "json_parser.mly"
                  ( ")" )
-# 433 "json_parser.ml"
+# 434 "json_parser.ml"
                : 'char))
 ; (fun __caml_parser_env ->
     let _1 = (Parsing.peek_val __caml_parser_env 0 : char) in
     Obj.repr(
 # 87 "json_parser.mly"
                  ( Char.escaped(_1) )
-# 440 "json_parser.ml"
+# 441 "json_parser.ml"
                : 'char))
 ; (fun __caml_parser_env ->
     let _1 = (Parsing.peek_val __caml_parser_env 0 : 'integer) in
     Obj.repr(
 # 90 "json_parser.mly"
                  ( float_of_string(_1) )
-# 447 "json_parser.ml"
+# 448 "json_parser.ml"
                : 'number))
 ; (fun __caml_parser_env ->
     let _1 = (Parsing.peek_val __caml_parser_env 1 : 'integer) in
@@ -451,7 +452,7 @@ let yyact = [|
     Obj.repr(
 # 91 "json_parser.mly"
                  ( float_of_string(_1 ^ _2) )
-# 455 "json_parser.ml"
+# 456 "json_parser.ml"
                : 'number))
 ; (fun __caml_parser_env ->
     let _1 = (Parsing.peek_val __caml_parser_env 1 : 'integer) in
@@ -459,7 +460,7 @@ let yyact = [|
     Obj.repr(
 # 92 "json_parser.mly"
                  ( float_of_string(_1 ^ _2) )
-# 463 "json_parser.ml"
+# 464 "json_parser.ml"
                : 'number))
 ; (fun __caml_parser_env ->
     let _1 = (Parsing.peek_val __caml_parser_env 2 : 'integer) in
@@ -468,14 +469,14 @@ let yyact = [|
     Obj.repr(
 # 93 "json_parser.mly"
                     ( float_of_string(_1 ^ _2 ^ _3) )
-# 472 "json_parser.ml"
+# 473 "json_parser.ml"
                : 'number))
 ; (fun __caml_parser_env ->
     let _1 = (Parsing.peek_val __caml_parser_env 0 : string) in
     Obj.repr(
 # 97 "json_parser.mly"
            ( _1 )
-# 479 "json_parser.ml"
+# 480 "json_parser.ml"
                : 'integer))
 ; (fun __caml_parser_env ->
     let _1 = (Parsing.peek_val __caml_parser_env 1 : string) in
@@ -483,14 +484,14 @@ let yyact = [|
     Obj.repr(
 # 98 "json_parser.mly"
                  ( _1 ^ _2 )
-# 487 "json_parser.ml"
+# 488 "json_parser.ml"
                : 'integer))
 ; (fun __caml_parser_env ->
     let _2 = (Parsing.peek_val __caml_parser_env 0 : string) in
     Obj.repr(
 # 99 "json_parser.mly"
                ( "-" ^ _2 )
-# 494 "json_parser.ml"
+# 495 "json_parser.ml"
                : 'integer))
 ; (fun __caml_parser_env ->
     let _2 = (Parsing.peek_val __caml_parser_env 1 : string) in
@@ -498,14 +499,14 @@ let yyact = [|
     Obj.repr(
 # 100 "json_parser.mly"
                       ( "-" ^ _2 ^ _3 )
-# 502 "json_parser.ml"
+# 503 "json_parser.ml"
                : 'integer))
 ; (fun __caml_parser_env ->
     let _2 = (Parsing.peek_val __caml_parser_env 0 : 'digits) in
     Obj.repr(
 # 104 "json_parser.mly"
              ( "." ^ _2 )
-# 509 "json_parser.ml"
+# 510 "json_parser.ml"
                : 'frac))
 ; (fun __caml_parser_env ->
     let _1 = (Parsing.peek_val __caml_parser_env 1 : 'e) in
@@ -513,14 +514,14 @@ let yyact = [|
     Obj.repr(
 # 108 "json_parser.mly"
            ( "e" ^ _2 )
-# 517 "json_parser.ml"
+# 518 "json_parser.ml"
                : 'exp))
 ; (fun __caml_parser_env ->
     let _1 = (Parsing.peek_val __caml_parser_env 0 : string) in
     Obj.repr(
 # 112 "json_parser.mly"
          ( _1 )
-# 524 "json_parser.ml"
+# 525 "json_parser.ml"
                : 'digits))
 ; (fun __caml_parser_env ->
     let _1 = (Parsing.peek_val __caml_parser_env 1 : string) in
@@ -528,28 +529,28 @@ let yyact = [|
     Obj.repr(
 # 113 "json_parser.mly"
                ( _1 ^ _2 )
-# 532 "json_parser.ml"
+# 533 "json_parser.ml"
                : 'digits))
 ; (fun __caml_parser_env ->
     let _1 = (Parsing.peek_val __caml_parser_env 0 : char) in
     Obj.repr(
 # 117 "json_parser.mly"
        ( Char.escaped(_1) )
-# 539 "json_parser.ml"
+# 540 "json_parser.ml"
                : 'e))
 ; (fun __caml_parser_env ->
     let _1 = (Parsing.peek_val __caml_parser_env 1 : char) in
     Obj.repr(
 # 118 "json_parser.mly"
             ( Char.escaped(_1) ^ "+")
-# 546 "json_parser.ml"
+# 547 "json_parser.ml"
                : 'e))
 ; (fun __caml_parser_env ->
     let _1 = (Parsing.peek_val __caml_parser_env 1 : char) in
     Obj.repr(
 # 119 "json_parser.mly"
              ( Char.escaped(_1) ^ "-" )
-# 553 "json_parser.ml"
+# 554 "json_parser.ml"
                : 'e))
 (* Entry parser_main *)
 ; (fun __caml_parser_env -> raise (Parsing.YYexit (Parsing.peek_val __caml_parser_env 0)))
